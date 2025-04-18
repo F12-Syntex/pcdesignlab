@@ -1,9 +1,11 @@
 package com.syntex.catalog.scrapper;
 
+import com.syntex.configuration.Configuration;
+
 public class CPUScrapper extends ComponentScrapper {
 
-    public CPUScrapper() {
-        super("cpu");
+    public CPUScrapper(Configuration config) {
+        super(config, "cpu");
     }
 
     @Override

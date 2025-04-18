@@ -5,52 +5,47 @@ import java.io.IOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.syntex.catalog.scrapper.PCPPScrapper;
-import com.syntex.configuration.CachedData;
+import com.syntex.configuration.Configuration;
 
 public class Catalog {
 
+    private static final String CONFIG_FILE = "config.json";
     private PCPPScrapper pcpPScrapper;
-    private CachedData config;
+    private Configuration config;
 
     public void loadCatalog() {
-        this.loadConfig();
-
-        this.pcpPScrapper = new PCPPScrapper();
+        this.config = loadConfig();
+        this.pcpPScrapper = new PCPPScrapper(config);
         this.pcpPScrapper.loadParts();
     }
 
-    private void loadConfig() {
+    private Configuration loadConfig() {
         ObjectMapper mapper = new ObjectMapper();
-        File configFile = new File("config.json");
+        File configFile = new File(CONFIG_FILE);
 
         if (configFile.exists()) {
             try {
-                this.config = mapper.readValue(configFile, CachedData.class);
+                Configuration loaded = mapper.readValue(configFile, Configuration.class);
                 System.out.println("Loaded config from file.");
+                return loaded;
             } catch (IOException e) {
-                System.err.println("Failed to load config, using empty config. Reason: " + e.getMessage());
-                this.config = CachedData.DEFAULT_DATA();
-                saveConfig();
+                System.err.println("Failed to load config, using default. Reason: " + e.getMessage());
             }
         } else {
-            System.out.println("Config file not found, creating empty config.");
-            this.config = CachedData.DEFAULT_DATA();
-            saveConfig();
+            System.out.println("Config file not found, creating default config.");
         }
-    }
 
-    private void saveConfig() {
-        ObjectMapper mapper = new ObjectMapper();
-        File configFile = new File("config.json");
+        Configuration defaultConfig = Configuration.DEFAULT_DATA();
         try {
-            mapper.writerWithDefaultPrettyPrinter().writeValue(configFile, this.config);
-            System.out.println("Saved new (empty) config to file.");
+            defaultConfig.save(CONFIG_FILE);
+            System.out.println("Default config saved to " + CONFIG_FILE + ".");
         } catch (IOException e) {
-            System.err.println("Failed to save config: " + e.getMessage());
+            System.err.println("Failed to save default config: " + e.getMessage());
         }
+        return defaultConfig;
     }
 
-    public CachedData getConfig() {
+    public Configuration getConfig() {
         return config;
     }
 }
