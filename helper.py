@@ -2,7 +2,7 @@ import os
 import pyperclip
 
 # Your list of folders
-folders = [r"src\main\java\com\syntex", r"src\main\resources"]
+folders = [r"src\main\java\com\syntex"]
 
 result = []
 

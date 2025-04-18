@@ -8,7 +8,6 @@ public class CPUScrapper extends ComponentScrapper {
 
     @Override
     public void load() {
-        System.out.println(this.url);
     }
 
 }
