@@ -2,10 +2,77 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
 
-<AnchorPane id="AnchorPane" prefHeight="200" prefWidth="320" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/10.0.2-internal" fx:controller="com.syntex.FXMLController">
-    <children>
-        <Button layoutX="128.0" layoutY="107.0" onAction="#btnClickAction" text="Click Me!" />
-        <Label fx:id="lblOut" layoutX="53.0" layoutY="30.0" minHeight="16" minWidth="69" prefHeight="52.0" prefWidth="215.0" />
-    </children>
-</AnchorPane>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+    xmlns="http://javafx.com/javafx/10.0.2-internal"
+    fx:controller="com.syntex.FXMLController">
+
+    <!-- Top: App Title -->
+    <top>
+        <HBox
+            style="-fx-padding: 20 0 10 0; -fx-background-color: linear-gradient(#232723 60%, #393e46 100%);">
+            <Label text="PCDesignLab — Creative PC Build Generator"
+                style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: white; -fx-padding: 0 0 0 30;" />
+        </HBox>
+    </top>
+
+    <!-- Left: Controls -->
+    <left>
+        <VBox spacing="20" style="-fx-padding: 30 20 30 20;">
+            <Label text="Actions" style="-fx-font-size: 18px; -fx-font-weight: bold;" />
+            <Button text="New Build"
+                fx:id="btnNewBuild"
+                styleClass="shiny-orange" />
+            <Button text="Optimize Build"
+                fx:id="btnOptimize"
+                styleClass="rich-blue" />
+            <Button text="Randomize"
+                fx:id="btnRandomize"
+                styleClass="round-red" />
+            <Button text="Save Build"
+                fx:id="btnSave"
+                styleClass="bevel-grey" />
+            <Button text="Load Build"
+                fx:id="btnLoad"
+                styleClass="big-yellow" />
+        </VBox>
+    </left>
+
+    <!-- Center: PC Build Visualization & Info -->
+    <center>
+        <VBox alignment="CENTER" spacing="15" style="-fx-padding: 30;">
+            <Label text="Visual PC Build Preview"
+                style="-fx-font-size: 17px; -fx-font-weight: bold;" />
+            <StackPane fx:id="panePreview"
+                prefWidth="400" prefHeight="200"
+                style="-fx-background-color: #f4f6fa; -fx-border-color: #bbb; -fx-border-radius: 10; -fx-background-radius: 10;">
+                <!-- You can later add an ImageView or schematic here -->
+                <Label text="(Preview Area)" style="-fx-text-fill: #888;" />
+            </StackPane>
+            <Label fx:id="lblOut" style="-fx-font-size: 15px;" />
+        </VBox>
+    </center>
+
+    <!-- Right: Build Details -->
+    <right>
+        <VBox spacing="10" style="-fx-padding: 30 30 30 10; -fx-background-color: #f9f9f9;">
+            <Label text="Build Breakdown"
+                style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+            <ListView fx:id="listParts" prefHeight="200" />
+            <HBox spacing="10">
+                <Label text="Region:" />
+                <ComboBox fx:id="comboRegion" prefWidth="120" />
+            </HBox>
+            <Label fx:id="lblCost" style="-fx-font-size: 14px; -fx-font-weight: bold;" />
+        </VBox>
+    </right>
+
+    <!-- Bottom: Footer/Status -->
+    <bottom>
+        <HBox style="-fx-background-color: #232723; -fx-padding: 8;">
+            <Label text="© 2024 Syntex Labs — Powered by JavaFX and Computational Creativity"
+                style="-fx-text-fill: #fff; -fx-font-size: 12px;" />
+        </HBox>
+    </bottom>
+</BorderPane>
