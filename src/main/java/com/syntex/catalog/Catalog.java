@@ -12,11 +12,18 @@ public class Catalog {
     private static final String CONFIG_FILE = "config.json";
     private PCPPScrapper pcpPScrapper;
     private Configuration config;
+    private PartsLoader dataSetLoader;
 
     public void loadCatalog() {
         this.config = loadConfig();
-        this.pcpPScrapper = new PCPPScrapper(config);
-        this.pcpPScrapper.loadParts();
+
+        // load the predownloaded data
+        this.dataSetLoader = new PartsLoader();
+        this.dataSetLoader.loadAllParts();
+        this.dataSetLoader.printSummary();
+
+        // this.pcpPScrapper = new PCPPScrapper(config);
+        // this.pcpPScrapper.loadParts();
     }
 
     private Configuration loadConfig() {
