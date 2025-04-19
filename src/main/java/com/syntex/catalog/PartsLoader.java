@@ -127,12 +127,15 @@ public class PartsLoader {
 
             partsMap.put(partType, validParts);
 
-            // System.out.println("Loaded " + validParts.size() + " items of type: " + partType);
+            // System.out.println("Loaded " + validParts.size() + " items of type: " +
+            // partType);
             // if (failed > 0) {
-            //     System.out.println("Skipped " + failed + " faulty items of type: " + partType);
+            // System.out.println("Skipped " + failed + " faulty items of type: " +
+            // partType);
             // }
             // if (nullParts > 0) {
-            //     System.out.println("Skipped " + nullParts + " null items of type: " + partType);
+            // System.out.println("Skipped " + nullParts + " null items of type: " +
+            // partType);
             // }
 
         } catch (Exception e) {
@@ -204,8 +207,16 @@ public class PartsLoader {
         return parts;
     }
 
-    public Map<String, List<? extends Part>> getAllParts() {
+    public Map<String, List<? extends Part>> getAllPartsMap() {
         return partsMap;
+    }
+
+    public List<? extends Part> getAllParts() {
+        List<Part> allParts = new ArrayList<>();
+        for (List<? extends Part> partList : partsMap.values()) {
+            allParts.addAll(partList);
+        }
+        return allParts;
     }
 
     public void printSummary() {
@@ -214,7 +225,7 @@ public class PartsLoader {
             String partType = entry.getKey();
             List<? extends Part> parts = entry.getValue();
 
-            if(parts.isEmpty()){
+            if (parts.isEmpty()) {
                 continue;
             }
 

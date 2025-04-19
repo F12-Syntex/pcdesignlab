@@ -2,28 +2,38 @@ package com.syntex.catalog;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.syntex.catalog.scrapper.PassmarkScrapper;
 import com.syntex.configuration.Configuration;
+import com.syntex.types.Part;
 
+import lombok.Data;
+
+@Data
 public class Catalog {
 
     private static final String CONFIG_FILE = "config.json";
     // private PCPPScrapper pcpPScrapper;
     private Configuration config;
     private PartsLoader dataSetLoader;
+    private List<? extends Part> catalog = new ArrayList<>();
+
+    private PassmarkScrapper passmarkScrapper;
 
     public void loadCatalog() {
         this.config = loadConfig();
+        this.passmarkScrapper = new PassmarkScrapper(config);
 
         // load the predownloaded data
         this.dataSetLoader = new PartsLoader();
         this.dataSetLoader.loadAllParts();
-        this.dataSetLoader.printSummary();
-        // this.dataSetLoader.printFirstThreeElements();
+        this.catalog = this.dataSetLoader.getAllParts();
 
-        // this.pcpPScrapper = new PCPPScrapper(config);
-        // this.pcpPScrapper.loadParts();
+        // now expand our dataset with benchmarks and prices aswell as other data
+        this.passmarkScrapper.loadParts();
     }
 
     private Configuration loadConfig() {

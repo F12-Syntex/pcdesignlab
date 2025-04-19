@@ -8,23 +8,27 @@ import com.syntex.configuration.Configuration;
 public abstract class ComponentScrapper {
 
     protected Configuration config;
-    protected String partName;
-    protected String url;
-    protected int pageNumber = 1;
 
-    public ComponentScrapper(Configuration config, String partName) {
+    public ComponentScrapper(Configuration config) {
         this.config = config;
-        this.partName = partName;
-        this.url = "https://pcpartpicker.com/products/" + partName + "/#xcx=0";
     }
 
-    protected String read() {
+    protected String read(String url) {
+
         String html = "";
-        String targetUrl = this.url + "&page=" + pageNumber; // Changed ?page to &page since URL already has a ?
-                                                             // parameter
+        String targetUrl = url;
+        String referer = url.substring(0, url.lastIndexOf("/"));
+        if (referer.contains("?")) {
+            referer = referer.substring(0, referer.lastIndexOf("?"));
+        }
+        if (referer.contains("#")) {
+            referer = referer.substring(0, referer.lastIndexOf("#"));
+        }
+        if (referer.contains("/")) {
+            referer = referer.substring(0, referer.lastIndexOf("/"));
+        }
 
         try {
-            // Add more browser-like headers and behaviors
             Document doc = Jsoup.connect(targetUrl)
                     .userAgent(
                             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36")
@@ -39,15 +43,13 @@ public abstract class ComponentScrapper {
                     .header("Sec-Fetch-Site", "none")
                     .header("Sec-Fetch-User", "?1")
                     .header("Cache-Control", "max-age=0")
-                    .referrer("https://pcpartpicker.com/")
+                    .referrer(referer)
                     .timeout(30_000)
                     .followRedirects(true)
                     .get();
 
-            // Add a random delay between 1-3 seconds to appear more human-like
             try {
-                // Random delay between 1000ms and 3000ms
-                long randomDelay = 1000 + (long) (Math.random() * 2000);
+                long randomDelay = 1000 + (long) (Math.random() * 500);
                 Thread.sleep(randomDelay);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
