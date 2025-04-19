@@ -4,13 +4,12 @@ import java.io.File;
 import java.io.IOException;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.syntex.catalog.scrapper.PCPPScrapper;
 import com.syntex.configuration.Configuration;
 
 public class Catalog {
 
     private static final String CONFIG_FILE = "config.json";
-    private PCPPScrapper pcpPScrapper;
+    // private PCPPScrapper pcpPScrapper;
     private Configuration config;
     private PartsLoader dataSetLoader;
 
@@ -21,6 +20,7 @@ public class Catalog {
         this.dataSetLoader = new PartsLoader();
         this.dataSetLoader.loadAllParts();
         this.dataSetLoader.printSummary();
+        // this.dataSetLoader.printFirstThreeElements();
 
         // this.pcpPScrapper = new PCPPScrapper(config);
         // this.pcpPScrapper.loadParts();
