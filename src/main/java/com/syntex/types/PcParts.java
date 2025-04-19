@@ -97,14 +97,6 @@ public class PcParts {
 
     @Data
     @EqualsAndHashCode(callSuper = true)
-    public static class OsPart extends Part {
-        private int mode; // Integer for bit mode (64)
-        private int max_memory;
-        private String type;
-    }
-
-    @Data
-    @EqualsAndHashCode(callSuper = true)
     public static class MonitorPart extends Part {
         private double screen_size;
         private int[] resolution; // [width, height]

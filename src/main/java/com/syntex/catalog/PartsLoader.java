@@ -33,7 +33,6 @@ import com.syntex.types.PcParts.MonitorPart;
 import com.syntex.types.PcParts.MotherboardPart;
 import com.syntex.types.PcParts.MousePart;
 import com.syntex.types.PcParts.OpticalDrivePart;
-import com.syntex.types.PcParts.OsPart;
 import com.syntex.types.PcParts.PowerSupplyPart;
 import com.syntex.types.PcParts.SoundCardPart;
 import com.syntex.types.PcParts.SpeakersPart;
@@ -70,9 +69,16 @@ public class PartsLoader {
         try (Stream<Path> paths = Files.list(Paths.get(DATASET_PATH))) {
             paths.filter(Files::isRegularFile)
                     .filter(path -> path.toString().endsWith(".json"))
-                    .forEach(this::loadPartFile);
+                    .forEach(path -> {
+                        try {
+                            loadPartFile(path);
+                        } catch (Exception e) {
+                            System.err.println("Error loading file: " + path.getFileName());
+                            e.printStackTrace();
+                        }
+                    });
         } catch (IOException e) {
-            System.err.println("Error loading parts: " + e.getMessage());
+            System.err.println("Error accessing dataset directory: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -91,28 +97,38 @@ public class PartsLoader {
             // Store the raw JSON data
             rawJsonMap.put(partType, jsonArray);
 
+            // Determine the correct class based on partType
+            Class<? extends Part> partClass = getPartClassForType(partType);
+
+            List<Part> validParts = new ArrayList<>();
+            int failed = 0;
+
             for (int i = 0; i < jsonArray.size(); i++) {
                 ObjectNode node = (ObjectNode) jsonArray.get(i);
+
                 // Add type field if not present
                 if (!node.has("type")) {
                     node.put("type", partType);
                 }
+
+                try {
+                    // Convert node to the appropriate Part subclass
+                    Part part = mapper.treeToValue(node, partClass);
+                    validParts.add(part);
+                } catch (Exception ex) {
+                    failed++;
+                }
             }
 
-            // Convert the modified JSON back to string
-            String modifiedJson = mapper.writeValueAsString(jsonArray);
+            partsMap.put(partType, validParts);
 
-            // Determine the correct class based on partType
-            Class<? extends Part> partClass = getPartClassForType(partType);
-
-            // Read the modified JSON into a list of parts of the appropriate type
-            List<? extends Part> parts = mapper.readValue(modifiedJson,
-                    mapper.getTypeFactory().constructCollectionType(List.class, partClass));
-
-            partsMap.put(partType, parts);
+            System.out.println("Loaded " + validParts.size() + " items of type: " + partType);
+            if (failed > 0) {
+                System.out.println("Skipped " + failed + " faulty items of type: " + partType);
+            }
 
         } catch (Exception e) {
-            System.err.println("Error loading " + partType + " parts: " + e.getMessage());
+            System.err.println("Error loading " + partType);
             e.printStackTrace();
         }
     }
@@ -135,8 +151,6 @@ public class PartsLoader {
                 return CasePart.class;
             case "power-supply":
                 return PowerSupplyPart.class;
-            case "os":
-                return OsPart.class;
             case "monitor":
                 return MonitorPart.class;
             case "sound-card":

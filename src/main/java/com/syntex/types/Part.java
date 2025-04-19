@@ -17,7 +17,6 @@ import com.syntex.types.PcParts.MonitorPart;
 import com.syntex.types.PcParts.MotherboardPart;
 import com.syntex.types.PcParts.MousePart;
 import com.syntex.types.PcParts.OpticalDrivePart;
-import com.syntex.types.PcParts.OsPart;
 import com.syntex.types.PcParts.PowerSupplyPart;
 import com.syntex.types.PcParts.SoundCardPart;
 import com.syntex.types.PcParts.SpeakersPart;
@@ -40,7 +39,6 @@ import lombok.Data;
     @JsonSubTypes.Type(value = VideoCardPart.class, name = "video-card"),
     @JsonSubTypes.Type(value = CasePart.class, name = "case"),
     @JsonSubTypes.Type(value = PowerSupplyPart.class, name = "power-supply"),
-    @JsonSubTypes.Type(value = OsPart.class, name = "os"),
     @JsonSubTypes.Type(value = MonitorPart.class, name = "monitor"),
     @JsonSubTypes.Type(value = SoundCardPart.class, name = "sound-card"),
     @JsonSubTypes.Type(value = WiredNetworkCardPart.class, name = "wired-network-card"),
