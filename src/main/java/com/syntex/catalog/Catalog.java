@@ -19,7 +19,7 @@ public class Catalog {
         // load the predownloaded data
         this.dataSetLoader = new PartsLoader();
         this.dataSetLoader.loadAllParts();
-        // this.dataSetLoader.printSummary();
+        this.dataSetLoader.printSummary();
         // this.dataSetLoader.printFirstThreeElements();
 
         // this.pcpPScrapper = new PCPPScrapper(config);

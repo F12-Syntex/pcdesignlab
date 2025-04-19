@@ -102,6 +102,7 @@ public class PartsLoader {
 
             List<Part> validParts = new ArrayList<>();
             int failed = 0;
+            int nullParts = 0; // Count of null parts
 
             for (int i = 0; i < jsonArray.size(); i++) {
                 ObjectNode node = (ObjectNode) jsonArray.get(i);
@@ -114,7 +115,11 @@ public class PartsLoader {
                 try {
                     // Convert node to the appropriate Part subclass
                     Part part = mapper.treeToValue(node, partClass);
-                    validParts.add(part);
+                    if (part != null) {
+                        validParts.add(part);
+                    } else {
+                        nullParts++;
+                    }
                 } catch (Exception ex) {
                     failed++;
                 }
@@ -122,10 +127,13 @@ public class PartsLoader {
 
             partsMap.put(partType, validParts);
 
-            System.out.println("Loaded " + validParts.size() + " items of type: " + partType);
-            if (failed > 0) {
-                System.out.println("Skipped " + failed + " faulty items of type: " + partType);
-            }
+            // System.out.println("Loaded " + validParts.size() + " items of type: " + partType);
+            // if (failed > 0) {
+            //     System.out.println("Skipped " + failed + " faulty items of type: " + partType);
+            // }
+            // if (nullParts > 0) {
+            //     System.out.println("Skipped " + nullParts + " null items of type: " + partType);
+            // }
 
         } catch (Exception e) {
             System.err.println("Error loading " + partType);
@@ -205,9 +213,13 @@ public class PartsLoader {
         for (Map.Entry<String, List<? extends Part>> entry : partsMap.entrySet()) {
             String partType = entry.getKey();
             List<? extends Part> parts = entry.getValue();
+
+            if(parts.isEmpty()){
+                continue;
+            }
+
             int count = parts.size();
             System.out.println(partType + ": " + count + " items");
-            System.out.println(">> " + (count > 0 ? parts.get(0).toString() : "No items available"));
         }
     }
 
